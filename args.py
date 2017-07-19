@@ -92,6 +92,7 @@ def parse_positional_args(positional_args):
             contexts.append(docker_build)
 
     if len(build_args) > 0:
+        context_args = {}
         context_args['args'] = build_args
         contexts_args.append(context_args)
 
