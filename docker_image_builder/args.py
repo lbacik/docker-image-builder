@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import argparse
+from docker_image_builder import docker_image_builder
 
 
 def parse():
@@ -26,7 +27,23 @@ def parse():
             -- 2017 Lukasz Bacik <mail@luka.sh>
         '''
     )
-
+    parser.add_argument(
+        '--version',
+        action='version',
+        help='print version and exit',
+        version=docker_image_builder.VERSION
+    )
+    parser.add_argument(
+        '-H',
+        '--docker-host',
+        help='URL to the Docker daemon (the same as `docker -H ...`)',
+        default='unix://var/run/docker.sock'
+    )
+    parser.add_argument(
+        '--tls',
+        help='enable TLS (in communication with Docker daemon)',
+        action='store_true'
+    )
     parser.add_argument(
         '-p',
         '--images-name-prefix',
