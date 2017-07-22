@@ -19,10 +19,10 @@ import docker
 from docker_image_builder import docker_helper
 from docker_image_builder import args
 
+VERSION = '0.1.1'
 
 def build():
     docker_file = 'Dockerfile'
-    docker_sock = 'unix://var/run/docker.sock'
 
     program_args = args.parse()
     contexts = args.parse_positional_args(program_args.params)
@@ -31,7 +31,8 @@ def build():
         print('There should be more than one Dockerfile to merge')
         exit(1)
 
-    client = docker.DockerClient(base_url=docker_sock, timeout=10)
+    docker_sock = program_args.docker_host
+    client = docker.DockerClient(base_url=docker_sock, timeout=10, tls=program_args.tls)
 
     build_prefix = program_args.images_name_prefix
     builds = docker_helper.build(contexts, build_prefix, docker_file, client)
