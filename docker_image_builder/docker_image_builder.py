@@ -19,7 +19,7 @@ import docker
 from docker_image_builder import docker_helper
 from docker_image_builder import args
 
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 
 def build():
     docker_file = 'Dockerfile'
@@ -28,14 +28,20 @@ def build():
     contexts = args.parse_positional_args(program_args.params)
 
     if len(contexts) < 2:
-        print('There should be more than one Dockerfile to merge')
-        exit(1)
+        log_error('There should be more than one Dockerfile to merge', None)
 
     docker_sock = program_args.docker_host
     client = docker.DockerClient(base_url=docker_sock, timeout=10, tls=program_args.tls)
 
     build_prefix = program_args.images_name_prefix
-    builds = docker_helper.build(contexts, build_prefix, docker_file, client)
+
+    try:
+        builds = docker_helper.build(contexts, build_prefix, docker_file, client)
+    except KeyError:
+        ''' key "stream" doesn't exist - nothing to print '''
+        log_error('!!! ERROR - BUILD: something went wrong...', None)
+    except Exception as e:
+        log_error('!!! ERROR - BUILD: ', e)
 
     if program_args.final_image_name:
         print('*** Adding tag %s to the last build' % (program_args.final_image_name,))
@@ -45,12 +51,26 @@ def build():
         else:
             image = program_args.final_image_name
 
-        client.api.tag(builds[-1], image, tag)
+        try:
+            client.api.tag(builds[-1], image, tag)
+        except Exception as e:
+            log_error('!!! ERROR - TAG: ', e)
 
     if program_args.remove_builds:
         if program_args.final_image_name:
             for i in builds:
                 print('*** Removing build %s' % (i,))
-                client.api.remove_image(i)
+                try:
+                    client.api.remove_image(i)
+                except Exception as e:
+                    log_error('!!! ERROR - REMOVE IMAGE: ', e)
         else:
             print('*** use of "remove-builds" option is only possible in conjunction with "final-image-name" one.')
+
+
+def log_error(prefix, e):
+    if e is not None:
+        print('%s%s' % (prefix, e))
+    else:
+        print('%s' % (prefix,))
+    exit(1)
