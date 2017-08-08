@@ -1,62 +1,26 @@
 # docker-image-builder
 
 If you have ever suffered from the limitation that you cannot parameterize the value of FROM keyword in Dockerfile 
-then this project may turned out somehow interesting for you. However, for the time being, the documentation is limited 
-to the only one of use examples of this code.
+then this project may turned out somehow interesting for you! Although, for the time being, its functionality is
+a little bit... limited - it has already power to do miracles!
 
 The main rule is that each next docker_context passed to the docker-image-builder script is build on the previous 
 one - despite of what the FROM parameter contains (this value is changed "on the fly" by the script).
 
-##### Please consider:
+## instalation
 
-`build-worker-branch.sh`:
+You can install the docker-image-builder using pip (version for python3, so pip3 exactly), try:
 
-    #!/usr/bin/env bash
-    
-    DOCKER_RUMMAGER=../rummager-pack-docker
-    # you can find rummager-pack-docker here: https://github.com/lbacik/rummager-pack-docker
-    
-    DOCKER_BUILDER=../docker-builder/docker_image_builder.py
-    # DOCKER_BUILDER is THIS project
-    
-    BRANCH=$1
-    
-    python3 $DOCKER_BUILDER \
-        --images-name-prefix rummager-build-${BRANCH}- \
-        --final-image-name rummager:${BRANCH} \
-        --remove-builds \
-        $DOCKER_RUMMAGER/images/worker \
-        $DOCKER_RUMMAGER/images/branch \
-            ARG:GIT_URL=https://github.com/lbacik/rummager.git \
-            ARG:BRANCH=${BRANCH} \
-            ARG:PROJECT_DIR=/project/rummager \
-        rummager-worker-config
-    
+    $ pip3 install docker-image-builder
 
-`rummager-worker-config` is a directory looks like this:
-    
-    └── rummager-worker-config
-        ├── Dockerfile
-        └── conf
-            └── config_local.py
+The package site at pypi service is at https://pypi.python.org/pypi/docker-image-builder
 
+Please check the:
 
-`rummager-worker-config/Dockerfile`:
+    $ docker-image-builder --help
 
-    FROM base-rummager-image
-    
-    COPY ./conf/config_local.py /project/rummager
-    RUN mkdir /project/rummager/logs
-    
+for available options.
 
-`rummager-worker-config/conf/config_local.py`:
-    
-    import logging
-    
-    soapurl = 'http://rumsrv.local/soap.php?wsdl'
-    soapurl_sender = 'http://rumsrv.local/soap-sender.php?WSDL&readable'
-    
-    log_dir = 'logs'
+## examples
 
-    mainloop_delay = 5
-    
+...comming soon...
