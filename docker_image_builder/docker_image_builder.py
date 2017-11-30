@@ -19,7 +19,7 @@ import docker
 from docker_image_builder import docker_helper
 from docker_image_builder import args
 
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 
 def build():
     docker_file = 'Dockerfile'
@@ -37,9 +37,6 @@ def build():
 
     try:
         builds = docker_helper.build(contexts, build_prefix, docker_file, client)
-    except KeyError:
-        ''' key "stream" doesn't exist - nothing to print '''
-        log_error('!!! ERROR - BUILD: something went wrong...', None)
     except Exception as e:
         log_error('!!! ERROR - BUILD: ', e)
 
