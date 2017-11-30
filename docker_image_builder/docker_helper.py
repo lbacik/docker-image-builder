@@ -75,7 +75,12 @@ def build(contexts, build_prefix, docker_file, client):
                 rm=True,
                 buildargs=args
         ):
-            print('%s' % line['stream'].encode().decode('ascii', 'ignore').rstrip())
+            try:
+                print('%s' % line['stream'].encode().decode('ascii', 'ignore').rstrip())
+            except KeyError:
+                ''' key "stream" doesn't exist - nothing to print '''
+                ''' [TODO] it is bad practice '''
+                pass
 
         builds.append(last_build)
         i += 1
