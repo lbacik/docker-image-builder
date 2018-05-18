@@ -19,7 +19,7 @@ import docker
 from docker_image_builder import docker_helper
 from docker_image_builder import args
 
-VERSION = '0.1.3'
+VERSION = '0.1.3b'
 
 def build():
     docker_file = 'Dockerfile'

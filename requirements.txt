@@ -1,2 +1,2 @@
-docker
+docker==2.7
 dockerfile_parse
